@@ -1,5 +1,5 @@
-#!/usr/bin/env python
-
+#!/usr/bin/env python3
+#
 # Terraform-Ansible dynamic inventory for IBM Cloud VPC Infrastructure
 # Copyright (c) 2019
 #
@@ -151,6 +151,8 @@ class TerraformInventory:
         inv_output["_meta"] = {'hostvars': hosts_vars}
 
         for group in group_hosts:
+            if group in ['bastion', 'maintenance']:
+                 break
             inv_output[group] = {'hosts': group_hosts[group]}
 
         return json.dumps(inv_output, indent=2)
@@ -162,9 +164,15 @@ class TerraformInventory:
 
         tfstate = get_tfstate(self.args.tfstate)
         vars = {}
-        for module in tfstate['modules']:
-            for key, value in module['outputs'].items():
-                vars.update({key: value["value"]})
+        #for module in tfstate['modules']:
+        outputs = tfstate['outputs']
+        for key in outputs:
+            value = outputs[key]
+            # for key, value in module['outputs'].items():
+            #for key, value in outputs.items():
+            #for key, value in output:
+            #    vars.update({key: value["value"]})
+            vars.update({key: value['value']})
         return vars
 
     def get_tf_security_group_name(self, id):
@@ -174,10 +182,14 @@ class TerraformInventory:
 
         tfstate = get_tfstate(self.args.tfstate)
         security_groups = {}
-        for module in tfstate['modules']:
-            for resource in module['resources'].values():
-                if resource['type'] == 'ibm_is_security_group' :
-                    tf_attrib = resource['primary']['attributes']
+        #for module in tfstate['modules']:
+        for resource in tfstate['resources']:
+            #for resource in module['resources'].values():
+            #for resource in resources:
+            if resource['type'] == 'ibm_is_security_group' :
+                for instance in resource['instances']:
+                    #tf_attrib = resource['primary']['attributes']
+                    tf_attrib = instance['attributes']
                     if tf_attrib["id"] == id:
                         return tf_attrib["name"]
 
@@ -187,8 +199,10 @@ class TerraformInventory:
         ################################################
 
         tfstate = get_tfstate(self.args.tfstate)
-        for module in tfstate['modules']:
-            for resource in module['resources'].values():
+        #for module in tfstate['modules']:
+        for resources in tfstate['resources']:
+            #for resource in module['resources'].values():
+            for resource in resources:
                 if resource['type'] == 'ibm_is_vpc':
                     tf_attrib = resource['primary']['attributes']
                     if tf_attrib["id"] == id:
@@ -200,8 +214,10 @@ class TerraformInventory:
         ################################################
 
         tfstate = get_tfstate(self.args.tfstate)
-        for module in tfstate['modules']:
-            for resource in module['resources'].values():
+        #for module in tfstate['modules']:
+        for resources in tfstate['resources']:
+            #for resource in module['resources'].values():
+            for resource in resources:
                 if resource['type'] == 'ibm_is_subnet':
                     tf_attrib = resource['primary']['attributes']
                     if tf_attrib["id"] == id:
@@ -212,36 +228,55 @@ class TerraformInventory:
 
         tfstate = get_tfstate(self.args.tfstate)
 
-        for module in tfstate['modules']:
-            for resource in module['resources'].values():
-                if resource['type'] == 'ibm_is_instance':
-
-                    tf_attrib = resource['primary']['attributes']
+        #for module in tfstate['modules']:
+        for resource in tfstate['resources']:
+            #for resource in module['resources'].values():
+            #for resource in resources:
+            if resource['type'] == 'ibm_is_instance':
+                for instance in resource['instances']:
+                    #tf_attrib = resource['primary']['attributes']
+                    tf_attrib = instance['attributes']
                     id = tf_attrib['id']
 
                     name = tf_attrib['name']
+                    if "bastion" in name:
+                        continue
+
+                    tf_primarynic = tf_attrib['primary_network_interface'][0]
+                    tf_vcpu = tf_attrib['vcpu'][0]
+                    tf_securitygroups = tf_primarynic['security_groups']
 
                     # Get Security Group ID, and derive name
-                    security_group_id = 0
-                    for key, value in tf_attrib.items():
-                        if "primary_network_interface.0.security_groups." in key:
-                            security_group_id = value
+                    #security_group_id = 0
+                    #for key, value in tf_attrib.items():
+                    #    if "primary_network_interface.0.security_groups." in key:
+                    #        security_group_id = value
 
-                    security_group = self.get_tf_security_group_name(security_group_id)
+                    #security_group_id = 0
+                    for security_group_id in tf_securitygroups:
+                        security_group_temp = self.get_tf_security_group_name(security_group_id)
+                        if "maintenance" in security_group_temp:
+                            continue
+                        else:
+                            security_group = security_group_temp
 
                     # Remove VPC prefix + "securitygroup" from name and change - to _ characters
                     tags = "group:" +security_group.split("-")[1].translate({ord(c): "_" for c in '-'})
 
                     attributes = {
                         'id': id,
-                        'subnet': self.get_tf_subnet_name(tf_attrib["primary_network_interface.0.subnet"]),
+                        #'subnet': self.get_tf_subnet_name(tf_primarynic['subnet']),
+                        'subnet': tf_primarynic['subnet'],
                         'securitygroup': security_group,
-                        'vpc': self.get_tf_vpc(tf_attrib["vpc"]),
+                        #'vpc': self.get_tf_vpc(tf_attrib["vpc"]),
+                        'vpc': tf_attrib['vpc'],
                         'zone': tf_attrib['zone'],
                         'ram': tf_attrib['memory'],
-                        'cpu': tf_attrib['cpu.0.cores'],
+                        #'cpu': tf_attrib['cpu.0.cores'],
+                        'cpu': tf_vcpu['count'],
                         'profile': tf_attrib['profile'],
-                        'ansible_host': tf_attrib['primary_network_interface.0.primary_ipv4_address'],
+                        #'ansible_host': tf_attrib['primary_network_interface.0.primary_ipv4_address'],
+                        'ansible_host': tf_primarynic['primary_ipv4_address'],
                         'ansible_ssh_user': 'root',
                         'provider': 'ibm',
                         'tags': tags
