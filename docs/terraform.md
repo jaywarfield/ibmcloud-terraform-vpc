@@ -9,10 +9,10 @@ simplifies the provisioning and management of infrastructure in the IBM Cloud us
 load balancers and VPN endpoints across the desired availability zones within and accross the regions specified.
 
 ## vpc-ibm-terraform-provider
-This project is currently based on Terraform v0.11.14 and the IBM Cloud Terraform Provider v.0.17.1.
+This project is currently based on Terraform v0.12.23 and the IBM Cloud Terraform Provider v.1.10.0.
 This provider can be found at: [https://github.com/IBM-Cloud/terraform-provider-ibm](https://github.com/IBM-Cloud/terraform-provider-ibm)
 
-Documentation for the IBM provider can be found at: [https://ibm-cloud.github.io/tf-ibm-docs/v0.17.1/](https://ibm-cloud.github.io/tf-ibm-docs/v0.17.1/)
+Documentation for the IBM provider can be found at: [https://cloud.ibm.com/docs/terraform](https://cloud.ibm.com/docs/terraform)
 
 ## Steps to modify sample Terraform Plan
 
@@ -65,7 +65,7 @@ Documentation for the IBM provider can be found at: [https://ibm-cloud.github.io
     
     ```shell
     export IC_REGION="us-south"
-    export IC_GENERATION="1"
+    export IC_GENERATION="2"
     export IC_API_KEY="api_key"
     terraform init
     ```

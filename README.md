@@ -87,15 +87,15 @@ as to show the ability to automate deployment and configuration tasks.
 
 | Tier  | Operating system |
 | ------------- | ------------- |
-| Web Server & Application | Ubuntu 16.04  |
-| Data  | Ubuntu 16.04  |
+| Web Server & Application | Ubuntu 18.04  |
+| Data  | Ubuntu 18.04  |
 
 #### Hardware
 
 | Tier | Type | Profile |
 | ------------- | ------------- | ------- |
-| Web Server and Application  |  VSI | cc1-2x4 |
-| Data| VSI  | bc1-4x16 |
+| Web Server and Application  |  VSI | cx2-2x4 |
+| Data| VSI  | bx2-4x16 |
 
 #### Runtime Services
 
@@ -111,8 +111,8 @@ as to show the ability to automate deployment and configuration tasks.
 ### Prerequisites
 
 The following software needs to be installed:
-1. Terraform 0.11 or greater
-2. [IBM Cloud Terraform Provider version 0.17.1](https://github.com/IBM-Cloud/terraform-provider-ibm) 
+1. Terraform 0.12 or greater
+2. [IBM Cloud Terraform Provider version 1.10.0](https://github.com/IBM-Cloud/terraform-provider-ibm) 
 2. Ansible 2.8
 
 The following must be configured prior to running Terraform / Ansible
