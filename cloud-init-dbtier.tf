@@ -9,7 +9,7 @@ apt:
   primary:
     - arches: [default]
       uri:  http://mirrors.adn.networklayer.com/ubuntu
-package-update: true
+package_update: true
 package_upgrade: true
 packages:
  - locales
@@ -32,6 +32,9 @@ power_state:
  timeout: 30
  condition: True
 
- EOF
+ 
+EOF
+
   }
 }
+

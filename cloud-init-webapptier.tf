@@ -41,7 +41,7 @@ apt:
           Va3l3WuB+rgKjsQ=
           =EWWI
           -----END PGP PUBLIC KEY BLOCK-----
-package-update: true
+package_update: true
 package_upgrade: true
 packages:
   - build-essential
@@ -54,16 +54,15 @@ packages:
   - python3-pip
   - nginx-full
   - mysql-client
-  - php7.0
-  - php7.0-common
-  - php7.0-mbstring
-  - php7.0-gd
-  - php7.0-intl
-  - php7.0-xml
-  - php7.0-mcryp
-  - php7.0-mysql
-  - php7.0-cli
-  - php7.0-cgi
+  - php7.2
+  - php7.2-common
+  - php7.2-mbstring
+  - php7.2-gd
+  - php7.2-intl
+  - php7.2-xml
+  - php7.2-mysql
+  - php7.2-cli
+  - php7.2-cgi
   - unit
   - unit-php
   - unit-dev
@@ -77,6 +76,9 @@ power_state:
  timeout: 30
  condition: True
 
- EOF
+ 
+EOF
+
   }
 }
+

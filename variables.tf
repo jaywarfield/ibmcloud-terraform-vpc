@@ -11,11 +11,11 @@ variable "vpc-name" {
 }
 
 variable "resource_group" {
-  default = "resource-name-goes-here"
+  default = "resource-name-here"
 }
 
 variable "cis_resource_group" {
-  default = "default"
+  default = "cis-resource-name-here"
 }
 
 #---------------------------------------------------------
@@ -63,6 +63,7 @@ variable "vpn-subnet-zone-1" {
 #---------------------------------------------------------
 ## DEFINE subnets for zone 2
 #---------------------------------------------------------
+
 variable "webapptier-subnet-zone-2" {
   default = "172.21.8.0/24"
 }
@@ -101,16 +102,16 @@ variable "ssh_public_key" {
 ## DEFINE OS image to be used for compute instances
 #---------------------------------------------------------
 
-#image = Ubuntu-16.04-amd64
+#image = Ubuntu-18.04-amd64
 variable "image" {
-  default = "7eb4e35b-4257-56f8-d7da-326d85452591"
+  default = "r006-ed3f775f-ad7e-4e37-ae62-7199b4988b00"
 }
 
 #---------------------------------------------------------
 ## DEFINE webapptier compute instance profile & quantity
 #---------------------------------------------------------
 variable "profile-webappserver" {
-  default = "cc1-2x4"
+  default = "cx2-2x4"
 }
 
 variable "webappserver-name" {
@@ -125,7 +126,7 @@ variable "webappserver-count" {
 ## DEFINE database tier compute instance profile & quantity
 #---------------------------------------------------------
 variable "profile-dbserver" {
-  default = "bc1-4x16"
+  default = "bx2-4x16"
 }
 
 variable "dbserver-name" {
