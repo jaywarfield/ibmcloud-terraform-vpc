@@ -67,7 +67,7 @@
     mode: changemaster
     master_user: slave
     master_password: "{{ dbpassword }}"
-    master_host: "{{ master_db }}"
+    master_host: "10.240.2.4"
 
 - name: Start Slave
   mysql_replication:
